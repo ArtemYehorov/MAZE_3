@@ -16,6 +16,8 @@ enum KeyCode { ENTER = 13, ESCAPE = 27, SPACE = 32, LEFT = 75, RIGHT = 77, UP = 
 const int WIDTH = 40; // ширина лабиринта
 const int HEIGHT = 10; // высота лабиринта
 
+int maze[HEIGHT][WIDTH] = {}; // maze - лабиринт по-английски
+
 HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 
 COORD infobox;
@@ -25,6 +27,11 @@ int health = 100; // количество очков здоровья главного героя
 int Steps = 0;
 int Energy = 200;
 int stepsEn = 0;
+
+void Spawn()
+{
+	maze[5][35] = MazeObject::ENEMY;
+}
 
 void ShowCoins()
 {
@@ -102,10 +109,7 @@ int main()
 
 	srand(time(0));
 
-	const int WIDTH = 40; // ширина лабиринта
-	const int HEIGHT = 10; // высота лабиринта
 
-	int maze[HEIGHT][WIDTH] = {}; // maze - лабиринт по-английски
 
 	// алгоритм заполнения массива
 	for (int y = 0; y < HEIGHT; y++) // перебор строк
@@ -401,11 +405,12 @@ int main()
 				&& maze[position.Y][position.X - 1] != MazeObject::BORDER
 				&& maze[position.Y][position.X - 1] != MazeObject::SPAWNENEMY)
 			{
-			PlaySound(L"D:/visualstudio/repos/MAZE_3/shag.wav", NULL, SND_FILENAME | SND_ASYNC);
+				PlaySound(L"D:/visualstudio/repos/MAZE_3/shag.wav", NULL, SND_FILENAME | SND_ASYNC);
 				position.X--;
 				Steps++;
 				Energy--;
 				stepsEn++;
+				if (Steps % 25 == 0) Spawn();
 			}
 			else if (code == KeyCode::RIGHT // если ГГ собрался пойти направо
 				&& maze[position.Y][position.X + 1] != MazeObject::WALL
@@ -414,33 +419,36 @@ int main()
 				// и при этом в лабиринте на той же строке (где ГГ) и
 				// немного (на одну ячейку) правее на 1 столбец от ГГ
 			{
-			PlaySound(L"D:/visualstudio/repos/MAZE_3/shag.wav", NULL, SND_FILENAME | SND_ASYNC);
+				PlaySound(L"D:/visualstudio/repos/MAZE_3/shag.wav", NULL, SND_FILENAME | SND_ASYNC);
 				position.X++;
 				Steps++;
 				Energy--;
 				stepsEn++;
+				if (Steps % 25 == 0) Spawn();
 			}
 			else if (code == KeyCode::UP
 				&& maze[position.Y - 1][position.X] != MazeObject::WALL
 				&& maze[position.Y - 1][position.X] != MazeObject::BORDER
 				&& maze[position.Y - 1][position.X] != MazeObject::SPAWNENEMY)
 			{
-			PlaySound(L"D:/visualstudio/repos/MAZE_3/shag.wav", NULL, SND_FILENAME | SND_ASYNC);
+				PlaySound(L"D:/visualstudio/repos/MAZE_3/shag.wav", NULL, SND_FILENAME | SND_ASYNC);
 				position.Y--;
 				Steps++;
 				Energy--;
 				stepsEn++;
+				if (Steps % 25 == 0) Spawn();
 			}
 			else if (code == KeyCode::DOWN
 				&& maze[position.Y + 1][position.X] != MazeObject::WALL
 				&& maze[position.Y + 1][position.X] != MazeObject::BORDER
 				&& maze[position.Y + 1][position.X] != MazeObject::SPAWNENEMY)
 			{
-			PlaySound(L"D:/visualstudio/repos/MAZE_3/shag.wav", NULL, SND_FILENAME | SND_ASYNC);
+				PlaySound(L"D:/visualstudio/repos/MAZE_3/shag.wav", NULL, SND_FILENAME | SND_ASYNC);
 				position.Y++;
 				Steps++;
 				Energy--;
 				stepsEn++;
+				if (Steps % 25 == 0) Spawn();
 			}
 
 			// показ ГГ в новой позиции
@@ -559,7 +567,7 @@ int main()
 					}
 				}
 			}
-			
+
 		}
 		else // нажатия не было, двигаем врагов
 		{
@@ -589,16 +597,6 @@ int main()
 					}
 				}
 			}
-			if (stepsEn == 30)
-			{
-				stepsEn = 0;
-				enemy_count++;
-				MazeObject::ENEMY;
-				SetConsoleCursorPosition(h, enemy_positions[enemy_count]);
-				SetConsoleTextAttribute(h, Color::RED);
-				cout << (char)1;
-			}
-
 
 			// перебор всех врагов
 			for (int i = 0; i < enemy_count; i++)
