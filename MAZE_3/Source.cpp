@@ -22,17 +22,12 @@ HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 
 COORD infobox;
 
-int coins = 0; // счЄтчик собранных монет
-int Steps = 0;
-int Energy = 200;
-int stepsEn = 0;
-
 void Spawn()
 {
 	maze[5][35] = MazeObject::ENEMY;
 }
 
-void ShowCoins()
+void ShowCoins(int coins)
 {
 	infobox.X = WIDTH + 1;
 	infobox.Y = 1;
@@ -54,7 +49,7 @@ void ShowHealth(int health)
 
 }
 
-void ShowSteps()
+void ShowSteps(int Steps)
 {
 	infobox.X = WIDTH + 1;
 	infobox.Y = 3;
@@ -65,7 +60,7 @@ void ShowSteps()
 	cout << Steps << "\n"; // 0
 }
 
-void ShowEnergy()
+void ShowEnergy(int Energy)
 {
 	infobox.X = WIDTH + 1;
 	infobox.Y = 4;
@@ -109,7 +104,10 @@ int main()
 	srand(time(0));
 
 	int health = 100;
+	int coins = 0;
+	int Steps = 0;
 
+	int Energy = 200;
 	// алгоритм заполнени€ массива
 	for (int y = 0; y < HEIGHT; y++) // перебор строк
 	{
@@ -217,13 +215,13 @@ int main()
 	/////////////////////////////////////////////////////////////////////
 	// информаци€ по всем показател€м
 
-	ShowCoins();
+	ShowCoins(coins);
 
 	ShowHealth(health = 100);
 
-	ShowSteps();
+	ShowSteps(Steps);
 
-	ShowEnergy();
+	ShowEnergy(Energy);
 
 	while (true)
 	{
@@ -234,13 +232,13 @@ int main()
 				code = _getch(); // получить конкретный код стрелки
 			}
 
-			ShowCoins();
+			ShowCoins(coins);
 
 			ShowHealth(health);
 
-			ShowSteps();
+			ShowSteps(Steps);
 
-			ShowEnergy();
+			ShowEnergy(Energy);
 
 			// стирание персонажика в старой позиции
 			SetConsoleCursorPosition(h, position);
@@ -408,7 +406,6 @@ int main()
 				position.X--;
 				Steps++;
 				Energy--;
-				stepsEn++;
 				if (Steps % 25 == 0) Spawn();
 			}
 			else if (code == KeyCode::RIGHT // если √√ собралс€ пойти направо
@@ -422,7 +419,6 @@ int main()
 				position.X++;
 				Steps++;
 				Energy--;
-				stepsEn++;
 				if (Steps % 25 == 0) Spawn();
 			}
 			else if (code == KeyCode::UP
@@ -434,7 +430,6 @@ int main()
 				position.Y--;
 				Steps++;
 				Energy--;
-				stepsEn++;
 				if (Steps % 25 == 0) Spawn();
 			}
 			else if (code == KeyCode::DOWN
@@ -446,7 +441,6 @@ int main()
 				position.Y++;
 				Steps++;
 				Energy--;
-				stepsEn++;
 				if (Steps % 25 == 0) Spawn();
 			}
 
@@ -474,7 +468,7 @@ int main()
 				PlaySound(L"D:/visualstudio/repos/MAZE_3/Monet.wav", NULL, SND_FILENAME | SND_ASYNC);
 				coins++; // на одну монетку собрали больше
 				Energy += 10;
-				ShowCoins();
+				ShowCoins(coins);
 				maze[position.Y][position.X] = MazeObject::HALL; // убираем монетку из лабиринта
 
 			}
