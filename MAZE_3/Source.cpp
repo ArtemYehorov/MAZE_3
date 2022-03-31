@@ -23,7 +23,6 @@ HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD infobox;
 
 int coins = 0; // счётчик собранных монет
-int health = 100; // количество очков здоровья главного героя
 int Steps = 0;
 int Energy = 200;
 int stepsEn = 0;
@@ -44,7 +43,7 @@ void ShowCoins()
 	cout << coins << "\n"; // 0
 }
 
-void ShowHealth()
+void ShowHealth(int health)
 {
 	infobox.Y = 2;
 	SetConsoleCursorPosition(h, infobox);
@@ -109,7 +108,7 @@ int main()
 
 	srand(time(0));
 
-
+	int health = 100;
 
 	// алгоритм заполнения массива
 	for (int y = 0; y < HEIGHT; y++) // перебор строк
@@ -220,7 +219,7 @@ int main()
 
 	ShowCoins();
 
-	ShowHealth();
+	ShowHealth(health = 100);
 
 	ShowSteps();
 
@@ -237,7 +236,7 @@ int main()
 
 			ShowCoins();
 
-			ShowHealth();
+			ShowHealth(health);
 
 			ShowSteps();
 
@@ -538,7 +537,7 @@ int main()
 			{
 				PlaySound(L"D:/visualstudio/repos/MAZE_3/Hill.wav", NULL, SND_FILENAME | SND_ASYNC);
 				health = 100;
-				ShowHealth();
+				ShowHealth(health);
 				maze[position.Y][position.X] = MazeObject::HALL;
 			}
 
@@ -548,7 +547,7 @@ int main()
 			{
 				health -= 20;
 				Energy -= 10;
-				ShowHealth();
+				ShowHealth(health);
 				maze[position.Y][position.X] = MazeObject::GRAVE; // убираем врага из лабиринта
 
 
