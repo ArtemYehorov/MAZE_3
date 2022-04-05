@@ -13,102 +13,17 @@ enum MazeObject { HALL, WALL, COIN, ENEMY, BORDER, GRAVE, HEALTHBOX, SPAWNENEMY 
 enum Color { DARKGREEN = 2, YELLOW = 14, RED = 12, BLUE = 9, WHITE = 15, DARKYELLOW = 6, DARKRED = 4, BLACK = 0, PINK = 13 };
 enum KeyCode { ENTER = 13, ESCAPE = 27, SPACE = 32, LEFT = 75, RIGHT = 77, UP = 72, DOWN = 80, Dot = 47 };
 
-const int WIDTH = 40; // ширина лабиринта
-const int HEIGHT = 10; // высота лабиринта
-
-int maze[HEIGHT][WIDTH] = {}; // maze - лабиринт по-английски
-
 HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-
 COORD infobox;
 
-void Spawn()
+void ShowCharacteristics(int coins, int health, int Steps, int Energy, const int WIDTH, COORD infobox);
+void Spawn(int maze[][40]);
+void Pokaz(const int WIDTH, const int HEIGHT, int maze[10][40]);
+void Zapol(const int WIDTH, const int HEIGHT, int maze[10][40]);
+int main();
+
+void Zapol(const int WIDTH, const int HEIGHT, int maze[10][40])
 {
-	maze[5][35] = MazeObject::ENEMY;
-}
-
-void ShowCoins(int coins)
-{
-	infobox.X = WIDTH + 1;
-	infobox.Y = 1;
-	SetConsoleCursorPosition(h, infobox);
-	SetConsoleTextAttribute(h, Color::DARKYELLOW);
-	cout << "COINS: ";
-	SetConsoleTextAttribute(h, Color::YELLOW);
-	cout << coins << "\n"; // 0
-}
-
-void ShowHealth(int health)
-{
-	infobox.Y = 2;
-	SetConsoleCursorPosition(h, infobox);
-	SetConsoleTextAttribute(h, Color::DARKRED);
-	cout << "HEALTH: ";
-	SetConsoleTextAttribute(h, Color::RED);
-	cout << health << " \n";
-
-}
-
-void ShowSteps(int Steps)
-{
-	infobox.X = WIDTH + 1;
-	infobox.Y = 3;
-	SetConsoleCursorPosition(h, infobox);
-	SetConsoleTextAttribute(h, Color::WHITE);
-	cout << "Steps: ";
-	SetConsoleTextAttribute(h, Color::WHITE);
-	cout << Steps << "\n"; // 0
-}
-
-void ShowEnergy(int Energy)
-{
-	infobox.X = WIDTH + 1;
-	infobox.Y = 4;
-	SetConsoleCursorPosition(h, infobox);
-	SetConsoleTextAttribute(h, Color::BLUE);
-	cout << "ENERGY: ";
-	SetConsoleTextAttribute(h, Color::BLUE);
-	cout << Energy << "  \n"; // 0
-}
-
-
-int main()
-{
-	// enumeration (перечисление - это набор именованных целочисленных констант)
-	// MazeObject - пользовательский (кастомизированный) тип данных
-
-
-	// настройки шрифта консоли
-	CONSOLE_FONT_INFOEX font; // https://docs.microsoft.com/en-us/windows/console/console-font-infoex
-	font.cbSize = sizeof(font);
-	font.dwFontSize.Y = 70;
-	font.FontFamily = FF_DONTCARE;
-	font.FontWeight = FW_NORMAL;
-	wcscpy_s(font.FaceName, 9, L"Consolas");
-	SetCurrentConsoleFontEx(h, 0, &font);
-
-	// скрытие мигающего курсора 
-	CONSOLE_CURSOR_INFO cursor;
-	cursor.bVisible = false; // спрятать курсор
-	cursor.dwSize = 1; // 1...100
-	SetConsoleCursorInfo(h, &cursor);
-
-	system("title Maze");
-	MoveWindow(GetConsoleWindow(), 20, 60, 1850, 900, true);
-	// 20 - отступ слева от левой границы рабочего стола до левой границы окна консоли (в пикселях!)
-	// 60 - отступ сверху от верхней границы рабочего стола до верхней границы окна консоли
-	// 1850 - ширина окна консоли в пикселях
-	// 900 - высота окна консоли
-	// true - перерисовать окно после перемещения
-
-	srand(time(0));
-
-	int health = 100;
-	int coins = 0;
-	int Steps = 0;
-
-	int Energy = 200;
-	// алгоритм заполнения массива
 	for (int y = 0; y < HEIGHT; y++) // перебор строк
 	{
 		for (int x = 0; x < WIDTH; x++) // перебор столбцов
@@ -149,8 +64,10 @@ int main()
 
 		}
 	}
+}
 
-	// показ лабиринта
+void Pokaz(const int WIDTH, const int HEIGHT, int maze[10][40])
+{
 	for (int y = 0; y < HEIGHT; y++) // перебор строк
 	{
 		for (int x = 0; x < WIDTH; x++) // перебор столбцов
@@ -195,6 +112,91 @@ int main()
 		}
 		cout << "\n";
 	}
+}
+
+void Spawn(int maze[][40])
+{
+	maze[5][35] = MazeObject::ENEMY;
+}
+
+void ShowCharacteristics(int coins, int health, int Steps, int Energy, const int WIDTH)
+{
+	COORD infobox;
+
+	infobox.X = WIDTH + 1;
+	infobox.Y = 1;
+	SetConsoleCursorPosition(h, infobox);
+	SetConsoleTextAttribute(h, Color::DARKYELLOW);
+	cout << "COINS: ";
+	SetConsoleTextAttribute(h, Color::YELLOW);
+	cout << coins << "\n"; // 0
+
+	infobox.Y = 2;
+	SetConsoleCursorPosition(h, infobox);
+	SetConsoleTextAttribute(h, Color::DARKRED);
+	cout << "HEALTH: ";
+	SetConsoleTextAttribute(h, Color::RED);
+	cout << health << " \n";
+
+	infobox.X = WIDTH + 1;
+	infobox.Y = 3;
+	SetConsoleCursorPosition(h, infobox);
+	SetConsoleTextAttribute(h, Color::WHITE);
+	cout << "Steps: ";
+	SetConsoleTextAttribute(h, Color::WHITE);
+	cout << Steps << "\n"; // 0
+
+	infobox.X = WIDTH + 1;
+	infobox.Y = 4;
+	SetConsoleCursorPosition(h, infobox);
+	SetConsoleTextAttribute(h, Color::BLUE);
+	cout << "ENERGY: ";
+	SetConsoleTextAttribute(h, Color::BLUE);
+	cout << Energy << "  \n"; // 0
+}
+
+
+int main()
+{
+	// enumeration (перечисление - это набор именованных целочисленных констант)
+	// MazeObject - пользовательский (кастомизированный) тип данных
+
+	// настройки шрифта консоли
+	CONSOLE_FONT_INFOEX font; // https://docs.microsoft.com/en-us/windows/console/console-font-infoex
+	font.cbSize = sizeof(font);
+	font.dwFontSize.Y = 70;
+	font.FontFamily = FF_DONTCARE;
+	font.FontWeight = FW_NORMAL;
+	wcscpy_s(font.FaceName, 9, L"Consolas");
+	SetCurrentConsoleFontEx(h, 0, &font);
+
+	// скрытие мигающего курсора 
+	CONSOLE_CURSOR_INFO cursor;
+	cursor.bVisible = false; // спрятать курсор
+	cursor.dwSize = 1; // 1...100
+	SetConsoleCursorInfo(h, &cursor);
+
+	system("title Maze");
+	MoveWindow(GetConsoleWindow(), 20, 60, 1850, 900, true);
+	// 20 - отступ слева от левой границы рабочего стола до левой границы окна консоли (в пикселях!)
+	// 60 - отступ сверху от верхней границы рабочего стола до верхней границы окна консоли
+	// 1850 - ширина окна консоли в пикселях
+	// 900 - высота окна консоли
+	// true - перерисовать окно после перемещения
+
+	srand(time(0));
+
+	int health = 100;
+	int coins = 0;
+	int Steps = 0;
+	int Energy = 200;
+	const int WIDTH = 40; // ширина лабиринта
+	const int HEIGHT = 10; // высота лабиринта
+
+	int maze[HEIGHT][WIDTH] = {}; // maze - лабиринт по-английски
+
+	Zapol(WIDTH,HEIGHT,maze);
+	Pokaz(WIDTH,HEIGHT,maze);
 
 	/////////////////////////////////////////////////////////////////////
 	COORD positionES;
@@ -214,14 +216,7 @@ int main()
 
 	/////////////////////////////////////////////////////////////////////
 	// информация по всем показателям
-
-	ShowCoins(coins);
-
-	ShowHealth(health = 100);
-
-	ShowSteps(Steps);
-
-	ShowEnergy(Energy);
+	ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
 
 	while (true)
 	{
@@ -232,13 +227,7 @@ int main()
 				code = _getch(); // получить конкретный код стрелки
 			}
 
-			ShowCoins(coins);
-
-			ShowHealth(health);
-
-			ShowSteps(Steps);
-
-			ShowEnergy(Energy);
+			ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
 
 			// стирание персонажика в старой позиции
 			SetConsoleCursorPosition(h, position);
@@ -406,7 +395,7 @@ int main()
 				position.X--;
 				Steps++;
 				Energy--;
-				if (Steps % 25 == 0) Spawn();
+				if (Steps % 25 == 0) Spawn(maze);
 			}
 			else if (code == KeyCode::RIGHT // если ГГ собрался пойти направо
 				&& maze[position.Y][position.X + 1] != MazeObject::WALL
@@ -419,7 +408,7 @@ int main()
 				position.X++;
 				Steps++;
 				Energy--;
-				if (Steps % 25 == 0) Spawn();
+				if (Steps % 25 == 0) Spawn(maze);
 			}
 			else if (code == KeyCode::UP
 				&& maze[position.Y - 1][position.X] != MazeObject::WALL
@@ -430,7 +419,7 @@ int main()
 				position.Y--;
 				Steps++;
 				Energy--;
-				if (Steps % 25 == 0) Spawn();
+				if (Steps % 25 == 0) Spawn(maze);
 			}
 			else if (code == KeyCode::DOWN
 				&& maze[position.Y + 1][position.X] != MazeObject::WALL
@@ -441,7 +430,7 @@ int main()
 				position.Y++;
 				Steps++;
 				Energy--;
-				if (Steps % 25 == 0) Spawn();
+				if (Steps % 25 == 0) Spawn(maze);
 			}
 
 			// показ ГГ в новой позиции
@@ -468,7 +457,7 @@ int main()
 				PlaySound(L"D:/visualstudio/repos/MAZE_3/Monet.wav", NULL, SND_FILENAME | SND_ASYNC);
 				coins++; // на одну монетку собрали больше
 				Energy += 10;
-				ShowCoins(coins);
+				ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
 				maze[position.Y][position.X] = MazeObject::HALL; // убираем монетку из лабиринта
 
 			}
@@ -531,7 +520,7 @@ int main()
 			{
 				PlaySound(L"D:/visualstudio/repos/MAZE_3/Hill.wav", NULL, SND_FILENAME | SND_ASYNC);
 				health = 100;
-				ShowHealth(health);
+				ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
 				maze[position.Y][position.X] = MazeObject::HALL;
 			}
 
@@ -541,7 +530,7 @@ int main()
 			{
 				health -= 20;
 				Energy -= 10;
-				ShowHealth(health);
+				ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
 				maze[position.Y][position.X] = MazeObject::GRAVE; // убираем врага из лабиринта
 
 
