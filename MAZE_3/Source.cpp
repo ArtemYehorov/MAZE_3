@@ -14,13 +14,25 @@ enum Color { DARKGREEN = 2, YELLOW = 14, RED = 12, BLUE = 9, WHITE = 15, DARKYEL
 enum KeyCode { ENTER = 13, ESCAPE = 27, SPACE = 32, LEFT = 75, RIGHT = 77, UP = 72, DOWN = 80, Dot = 47 };
 
 HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-COORD infobox;
 
-void ShowCharacteristics(int coins, int health, int Steps, int Energy, const int WIDTH, COORD infobox);
+void ShowCharacteristics(int health, int Steps, int Energy, const int WIDTH);
 void Spawn(int maze[][40]);
 void Pokaz(const int WIDTH, const int HEIGHT, int maze[10][40]);
 void Zapol(const int WIDTH, const int HEIGHT, int maze[10][40]);
+void ShowCoins(int coins, const int WIDTH);
 int main();
+
+void ShowCoins(int coins, const int WIDTH)
+{
+	COORD infobox;
+	infobox.X = WIDTH + 1;
+	infobox.Y = 1;
+	SetConsoleCursorPosition(h, infobox);
+	SetConsoleTextAttribute(h, Color::DARKYELLOW);
+	cout << "COINS: ";
+	SetConsoleTextAttribute(h, Color::YELLOW);
+	cout << coins << "\n"; // 0
+}
 
 void Zapol(const int WIDTH, const int HEIGHT, int maze[10][40])
 {
@@ -119,18 +131,11 @@ void Spawn(int maze[][40])
 	maze[5][35] = MazeObject::ENEMY;
 }
 
-void ShowCharacteristics(int coins, int health, int Steps, int Energy, const int WIDTH)
+void ShowCharacteristics(int health, int Steps, int Energy, const int WIDTH)
 {
 	COORD infobox;
 
 	infobox.X = WIDTH + 1;
-	infobox.Y = 1;
-	SetConsoleCursorPosition(h, infobox);
-	SetConsoleTextAttribute(h, Color::DARKYELLOW);
-	cout << "COINS: ";
-	SetConsoleTextAttribute(h, Color::YELLOW);
-	cout << coins << "\n"; // 0
-
 	infobox.Y = 2;
 	SetConsoleCursorPosition(h, infobox);
 	SetConsoleTextAttribute(h, Color::DARKRED);
@@ -216,7 +221,8 @@ int main()
 
 	/////////////////////////////////////////////////////////////////////
 	// информация по всем показателям
-	ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
+	ShowCharacteristics(health, Steps, Energy, WIDTH);
+	ShowCoins(coins, WIDTH);
 
 	while (true)
 	{
@@ -227,7 +233,7 @@ int main()
 				code = _getch(); // получить конкретный код стрелки
 			}
 
-			ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
+			ShowCharacteristics(health, Steps, Energy, WIDTH);
 
 			// стирание персонажика в старой позиции
 			SetConsoleCursorPosition(h, position);
@@ -457,7 +463,7 @@ int main()
 				PlaySound(L"D:/visualstudio/repos/MAZE_3/Monet.wav", NULL, SND_FILENAME | SND_ASYNC);
 				coins++; // на одну монетку собрали больше
 				Energy += 10;
-				ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
+				ShowCoins(coins, WIDTH);
 				maze[position.Y][position.X] = MazeObject::HALL; // убираем монетку из лабиринта
 
 			}
@@ -520,7 +526,7 @@ int main()
 			{
 				PlaySound(L"D:/visualstudio/repos/MAZE_3/Hill.wav", NULL, SND_FILENAME | SND_ASYNC);
 				health = 100;
-				ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
+				ShowCharacteristics(health, Steps, Energy, WIDTH);
 				maze[position.Y][position.X] = MazeObject::HALL;
 			}
 
@@ -530,7 +536,7 @@ int main()
 			{
 				health -= 20;
 				Energy -= 10;
-				ShowCharacteristics(coins, health, Steps, Energy, WIDTH);
+				ShowCharacteristics(health, Steps, Energy, WIDTH);
 				maze[position.Y][position.X] = MazeObject::GRAVE; // убираем врага из лабиринта
 
 
